@@ -5,71 +5,94 @@
 
 <br />
 
-## 📖 What is this project?
+## 🤝 Project Vision (Client Overview)
 
-The **Academic Orientation System** solves a critical problem in modern education and career development: *navigating the overwhelming number of technical specializations available today.*
+Welcome to the **Academic Orientation System**, a next-generation career and academic guidance platform. 
 
-Whether a student is studying Computer Science, Digital Development, or Information Systems, it can be extremely difficult to confidently choose the right career path (e.g., *Machine Learning Engineer*, *Cybersecurity Analyst*, *Full-Stack Developer*, or *Data Scientist*). Too often, students rely on intuition rather than empirical data about their own skills.
+Imagine you are a student or a young professional facing the vast landscape of tech specializations—Should you be a Data Scientist? A Cybersecurity Analyst? A Full-Stack Developer? Making the wrong choice can cost years of frustration. 
 
-This project introduces a **data-driven, intelligent recommendation engine**. By putting users through a comprehensive evaluation that measures technical knowledge, practical problem-solving skills, logic, and time management, the system's Machine Learning backend accurately predicts the specialization where the user is most likely to succeed.
+Our system removes the guesswork. We provide a **data-driven ecosystem** that evaluates a user's technical knowledge, logical reasoning, and practical problem-solving skills through dynamic assessments. Behind the scenes, our advanced **Machine Learning Engine**, trained on rigorous academic methodologies, processes these scores to predict the exact career path where the user will thrive. 
 
-But it doesn't stop at predictions: the platform features a baked-in **Recommendation System** that analyzes precisely *why* a user scored a certain way, identifies granular skill gaps (like *Python*, *ML Theory*, or *Data Preprocessing*), and recommends specific learning resources (from Coursera, Kaggle, Codecademy, etc.) to help them improve.
-
----
-
-## ✨ Key Features & Capabilities
-
-### 🧠 1. Machine Learning Prediction Engine
-* **Rigorous Academic Methodology**: The ML pipeline is built on a strict data science methodology, enforcing mandatory steps: *Exploratory Data Analysis (EDA)*, *Data Cleaning (KNN/Mean Imputation)*, *Preprocessing (Standardization/Label Encoding)*, and *Model Evaluation*.
-* **Multi-Algorithm Evaluation**: The system automatically trains and compares multiple classifiers (`Logistic Regression`, `KNN`, `Decision Tree`, `Random Forest`, `SVM`) using Cross-Validation, retaining the highest-performing model to serve predictions.
-* **Continuous Learning Architecture**: As more students take tests on the frontend, the system is designed to periodically evaluate new data and retrain the models automatically to preserve high accuracy over time.
-
-### 📊 2. Deep Skill Profiling & Recommendations
-* **Granular Skill Mapping**: The test doesn't just output a final grade. Every question is mapped to specific competencies (e.g., *Logical Reasoning*, *Ensemble Methods*, *Network Security*).
-* **Actionable Feedback**: Using the `RecommendationSystem` module, the backend isolates the exact skills where the user scored poorly (< 2.0/3.0) and generates a personalized curriculum.
-* **Progress Tracking**: Users can take tests sequentially over months or years. The database tracks `improvement_rate`, `previous_level`, and `current_level`, allowing students to visualize their growth.
-
-### 🌐 3. Full-Stack Application Ecosystem
-* **FastAPI Backend**: A highly performant, asynchronous API layer that serves predictions under milliseconds, handles JWT-based user authentication, and orchestrates database transactions via SQLAlchemy.
-* **Interactive React Frontend**: A modern client side built with React 18 and Recharts, providing a smooth user experience from account creation to taking dynamic diagnostic exams to viewing detailed performance dashboards.
+More than just a prediction, the platform acts as a personal mentor. It pinpoints your exact skill gaps—down to topics like "Data Preprocessing" or "Model Evaluation"—and provides highly curated learning resources tailored to help you level up your career.
 
 ---
 
-## 🏗️ Technical Architecture
+## 🌟 Advantages of the System
 
-This application is decoupled into three primary pillars:
+* **100% Data-Driven Confidence**: Replaces intuition with statistical models, giving students empirical proof of their strengths.
+* **Granular Competency Tracking**: Doesn't just give a pass/fail grade. We map every single test question to specific industry skills.
+* **Actionable Learning Paths**: Users don't just see what they did wrong; they are handed the exact courses (e.g., Coursera, Kaggle) to fix their weaknesses.
+* **Continuous Improvement Tracking**: The system tracks user performance over time, visualizing their trajectory and improvement rates across multiple attempts.
+* **Auto-Adaptive AI**: The backend is built with continuous learning in mind. As more students take tests, the model can be retrained on fresh data to remain highly accurate to modern standards.
 
-```text
-├── academic_ml_pipeline.py   # The offline Python pipeline that cleans data and exports .pkl models
-├── /backend/                 # The Python REST API
-│   ├── main.py               # Application entry point, endpoints & prediction logic
-│   ├── auth.py               # Security, password hashing (bcrypt/SHA256) & JWT generation
-│   ├── database.py           # SQLite context and SQLAlchemy ORM Models
-│   ├── recommendation_system.py # Diagnostic logic linking scores to learning resources
-│   └── continuous_learning.py   # Background tasks that retrain models with new data
-└── /frontend/                # The React Web Application
-    ├── package.json          # Node dependencies (Axios, React Router, Recharts)
-    └── /src                  # UI Components, State Management, and API Services
-```
+---
 
-### Stack Details
+## 💡 The Solutions We Provide
+
+1. **Intelligent Diagnostics**: A comprehensive testing module that goes beyond multiple-choice to evaluate practical problem-solving and logic.
+2. **Personalized Recommendations Algorithm**: Matches weak skills (scoring < 2.0) directly with industry-standard educational resources.
+3. **Admin Telemetry & Dashboards**: Allows platform operators to monitor overall accuracy, see user distributions across specializations, and ensure the neural logic holds up in production.
+
+---
+
+## 📱 Platform Pages (Frontend Architecture)
+
+Our React-based frontend is built with user experience in mind, offering a seamless journey across the following pages:
+
+* **`/login` & `/register`**: Secure authentication portals via JWT.
+* **`/select-filiere`**: The onboarding page where users declare their broad academic field before being drilled down.
+* **`/test`**: The core diagnostic exam environment where the timer, scoring, and questions are processed.
+* **`/results/:testId`**: An immediate, visually rich dashboard displaying the ML Prediction (e.g., "Machine Learning Engineer - 98% Confidence") along with granular skill feedback.
+* **`/dashboard`**: The centralized portal for general users to begin new tests and view rapid summaries.
+* **`/history`**: A ledger of all past exams taken by the user.
+* **`/progress`**: A charting page (via Recharts) that visualizes the user's growth, `improvement_rate`, and skill trajectory over time.
+* **`/admin`**: The master control and analytics dashboard restricted to operators.
+
+---
+
+## 👥 User Roles & Permissions
+
+The platform employs Role-Based Access Control (RBAC) to ensure security and privacy:
+
+* **Standard User (`"user"`)**
+  * Can take diagnostic exams.
+  * Has access to their personal test history, progress tracking, and personalized learning recommendations.
+* **Administrator (`"admin"`)**
+  * Cannot take tests.
+  * Owns the `/admin` portal to view global telemetry, overall model confidence metrics, and user distribution data to ensure the ML pipeline is serving the business smoothly.
+
+---
+*(Technical Implementation Details Below)*
+---
+
+## 🧠 Machine Learning Methodology
+
+The pipeline enforces a strict academic workflow ensuring robustness and reliability at every step:
+
+1. **Dataset Description**: Loading dataset, calculating shape, memory footprint, and column composition.
+2. **Exploratory Data Analysis (EDA)**: Descriptive statistics, Missing Values Analysis, Outlier detection (IQR method), Histograms, and Correlation Matrices.
+3. **Data Cleaning**: Handling duplicates, missing values (using Mean and KNN imputation techniques), and correcting inconsistent data values.
+4. **Data Preprocessing**: Label encoding for categorical data, Train/Test splitting, and feature scaling using `StandardScaler`.
+5. **Model Selection & Training**: The pipeline trains multiple classifiers to compare performance:
+   - Logistic Regression | K-Nearest Neighbors (KNN) | Decision Tree | Random Forest | Support Vector Machines (SVM)
+6. **Model Evaluation**: Calculation of Accuracy, Precision, Recall, F1-Score, Cross-Validation (CV), Overfitting analysis, and generation of Confusion Matrices.
+
+---
+
+## 🛠️ Technology Stack
+
 * **Machine Learning**: `scikit-learn`, `pandas`, `numpy`, `xgboost`, `imbalanced-learn`
 * **Backend Framework**: `FastAPI`, `Uvicorn`, `Pydantic`
-* **Database**: `SQLite` via `SQLAlchemy` ORM
-* **Frontend UI**: `React.js` (v18), `React Router v6`, `Recharts` for charting.
-* **Data Visualization**: `matplotlib`, `seaborn`, `plotly` (Generated during model training)
+* **Database**: `SQLite` / `SQLAlchemy` ORM
+* **Authentication**: `python-jose` (JWT), `passlib` (bcrypt/SHA256)
+* **Frontend**: `React.js` (v18), `React Router v6`, `Recharts`, `Axios`
+* **Data Visualization**: `matplotlib`, `seaborn`, `plotly`
 
 ---
 
-## 🚀 Setup & Installation Guide
+## ⚙️ Setup and Installation
 
-### Prerequisites
-* Python 3.9+
-* Node.js 16+ & npm
-
-### 1. Backend & ML Server Setup
-
-Open a terminal and map to the project root:
+### 1. Backend (FastAPI & Machine Learning)
 
 ```bash
 # Clone the repository
@@ -78,21 +101,20 @@ cd "SYSTÈME D’ORIENTATION"
 
 # Create a virtual environment (optional but recommended)
 python -m venv venv
-source venv/bin/activate  # On Windows use: venv\Scripts\activate
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-# Install all Python dependencies
+# Install dependencies
 pip install -r requirements.txt
 
 # Run the FastAPI server
 cd backend
 uvicorn main:app --reload
 ```
-> The backend server will be live at `http://localhost:8000`. 
-> You can visit the interactive API documentation at `http://localhost:8000/docs`.
+*The backend API will run on `http://localhost:8000` (Docs: `http://localhost:8000/docs`).*
 
-### 2. Frontend React Application Setup
+### 2. Frontend (React)
 
-Open a new, separate terminal window:
+Open a new terminal session:
 
 ```bash
 # Navigate to the frontend directory
@@ -104,15 +126,4 @@ npm install
 # Start the React development server
 npm start
 ```
-> The React application will spin up at `http://localhost:3000`.
-
----
-
-## 🔐 Security & Version Control
-This repository is pre-configured with a comprehensive `.gitignore` ensuring that your SQLite databases (`*.db`, `*.sqlite`), trained binary models (`*.pkl`), sensitive `.env` files, and `node_modules/` are strictly excluded from source control, keeping your environment secure right out of the box.
-
----
-
-<div align="center">
-  <i>Developed to bridge the gap between academic theory and practical, intelligence-assisted career guidance.</i>
-</div>
+*The frontend will run on `http://localhost:3000`.*
