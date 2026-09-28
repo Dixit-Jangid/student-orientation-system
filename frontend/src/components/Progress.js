@@ -23,7 +23,7 @@ function Progress({ user }) {
   };
 
   if (loading) {
-    return <div className="loading">Chargement de la progression...</div>;
+    return <div className="loading">Loading progress...</div>;
   }
 
   if (!progress || progress.message) {
@@ -31,19 +31,19 @@ function Progress({ user }) {
       <div>
         <nav className="navbar">
           <div className="navbar-content">
-            <h1>Progression</h1>
+            <h1>Progress</h1>
             <Link to="/dashboard" className="btn btn-secondary">
-              Tableau de bord
+              Dashboard
             </Link>
           </div>
         </nav>
         <div className="container">
           <div className="card">
             <p style={{ textAlign: 'center', color: '#666' }}>
-              Aucune donnée de progression disponible. Passez des tests pour suivre votre évolution.
+              No progress data is available yet. Complete assessments to track your progress.
             </p>
             <Link to="/dashboard" className="btn btn-primary" style={{ display: 'block', textAlign: 'center', marginTop: '20px' }}>
-              Passer un test
+              Take an assessment
             </Link>
           </div>
         </div>
@@ -53,7 +53,7 @@ function Progress({ user }) {
 
   const chartData = progress.history?.map((h, index) => ({
     name: `Test ${index + 1}`,
-    Niveau: h.current_level,
+    Level: h.current_level,
     Score: h.practical_test_score,
   })) || [];
 
@@ -61,9 +61,9 @@ function Progress({ user }) {
     <div>
       <nav className="navbar">
         <div className="navbar-content">
-          <h1>Progression</h1>
+          <h1>Progress</h1>
           <Link to="/dashboard" className="btn btn-secondary">
-            Tableau de bord
+            Dashboard
           </Link>
         </div>
       </nav>
@@ -71,27 +71,27 @@ function Progress({ user }) {
       <div className="container">
         <div className="card">
           <h2 className="text-gradient" style={{ marginBottom: '32px' }}>
-            Analyse de votre progression
+            Progress Analysis
           </h2>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '24px', marginBottom: '32px' }}>
             <div className="stat-card">
-              <h3>Tests effectués</h3>
+              <h3>Assessments completed</h3>
               <p>{progress.total_tests || 0}</p>
             </div>
             <div className="stat-card">
-              <h3>Niveau actuel</h3>
+              <h3>Current level</h3>
               <p>{progress.current_level || 0}/5</p>
             </div>
             <div className="stat-card">
-              <h3>Score moyen</h3>
+              <h3>Average score</h3>
               <p>{progress.average_score ? progress.average_score.toFixed(1) : 0}/100</p>
             </div>
             <div className="stat-card">
               <h3>Tendance</h3>
               <p style={{ fontSize: '1.5rem', marginTop: '12px' }}>
-                {progress.level_trend === 'improving' ? '📈 Amélioration' :
-                 progress.level_trend === 'stable' ? '➡️ Stable' : '📉 Déclin'}
+                {progress.level_trend === 'improving' ? '📈 Improving' :
+                 progress.level_trend === 'stable' ? '➡️ Stable' : '📉 Declining'}
               </p>
             </div>
           </div>
@@ -99,7 +99,7 @@ function Progress({ user }) {
           {chartData.length > 0 ? (
             <div style={{ marginTop: '32px' }}>
               <h3 className="text-gradient" style={{ marginBottom: '24px' }}>
-                Évolution du niveau et des scores
+                Level and Score Trends
               </h3>
               <div style={{ background: '#f8f9fa', padding: '24px', borderRadius: '12px' }}>
                 <ResponsiveContainer width="100%" height={400}>
@@ -128,12 +128,12 @@ function Progress({ user }) {
                     />
                     <Line 
                       type="monotone" 
-                      dataKey="Niveau" 
+                      dataKey="Level"
                       stroke="#667eea" 
                       strokeWidth={3}
                       dot={{ fill: '#667eea', r: 6 }}
                       activeDot={{ r: 8 }}
-                      name="Niveau"
+                      name="Level"
                     />
                     <Line 
                       type="monotone" 
@@ -151,17 +151,17 @@ function Progress({ user }) {
           ) : (
             <div className="stat-card" style={{ textAlign: 'center', padding: '40px' }}>
               <h3 className="text-gradient" style={{ marginBottom: '16px' }}>
-                Aucune donnée de progression
+                No progress data available
               </h3>
               <p style={{ color: '#718096', marginBottom: '24px' }}>
-                Passez plus de tests pour voir votre évolution sur le graphique
+                Complete more assessments to see your progress on the chart
               </p>
             </div>
           )}
 
           {progress.improvement_rate !== undefined && (
             <div style={{ marginTop: '30px', padding: '20px', background: '#f8f9fa', borderRadius: '8px' }}>
-              <h3 style={{ color: '#667eea', marginBottom: '10px' }}>Taux d'amélioration</h3>
+              <h3 style={{ color: '#667eea', marginBottom: '10px' }}>Improvement rate</h3>
               <p style={{ fontSize: '1.5em', fontWeight: 'bold' }}>
                 {(progress.improvement_rate * 100).toFixed(1)}%
               </p>

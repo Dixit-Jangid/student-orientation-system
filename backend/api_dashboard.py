@@ -83,13 +83,13 @@ async def get_user_dashboard(
     if len(all_tests) > 1:
         previous_test = all_tests[-2]
         if latest_test.current_level > previous_test.current_level:
-            improvement_message = "Bravo, votre niveau s'est amélioré !"
+            improvement_message = "Great work, your level has improved!"
         elif latest_test.current_level == previous_test.current_level:
-            improvement_message = "Vous devez renforcer certaines compétences pour progresser."
+            improvement_message = "Strengthen key skills to keep progressing."
         else:
-            improvement_message = "Votre progression nécessite plus de pratique."
+            improvement_message = "Your progress needs more practice."
     else:
-        improvement_message = "Continuez à pratiquer pour améliorer vos compétences."
+        improvement_message = "Keep practicing to improve your skills."
     
     # Get predictions for top 3
     predictions = db.query(PredictionHistory).filter(

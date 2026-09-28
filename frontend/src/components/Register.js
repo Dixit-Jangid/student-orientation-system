@@ -17,7 +17,7 @@ function Register({ onLogin }) {
     setError('');
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Les mots de passe ne correspondent pas');
+      setError('Passwords do not match.');
       return;
     }
 
@@ -59,7 +59,7 @@ function Register({ onLogin }) {
     } catch (err) {
       console.error('[REGISTER] Error:', err);
       console.error('[REGISTER] Error response:', err.response?.data);
-      setError(err.response?.data?.detail || 'Erreur lors de l\'inscription');
+      setError(err.response?.data?.detail || 'Registration failed. Please try again.');
     }
   };
 
@@ -124,14 +124,14 @@ function Register({ onLogin }) {
             lineHeight: '1.2',
             textShadow: '0 4px 20px rgba(0,0,0,0.2)'
           }}>
-            Commencez votre
+            Start your
             <br />
             <span style={{
               background: 'linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.8) 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent'
             }}>
-              Parcours d'Orientation
+              Career Journey
             </span>
           </h1>
           <p style={{
@@ -140,7 +140,7 @@ function Register({ onLogin }) {
             opacity: 0.95,
             lineHeight: '1.6'
           }}>
-            Rejoignez des milliers d'étudiants qui ont découvert leur voie grâce à notre système d'orientation intelligent.
+            Join students discovering the right path through AI-powered career guidance.
           </p>
 
           {/* Features */}
@@ -151,10 +151,10 @@ function Register({ onLogin }) {
             marginTop: '40px'
           }}>
             {[
-              { icon: '✨', text: 'Test personnalisé basé sur vos compétences' },
-              { icon: '🎯', text: 'Recommandations précises par IA' },
-              { icon: '📊', text: 'Suivi de progression détaillé' },
-              { icon: '🏆', text: 'Accès à votre spécialisation idéale' }
+              { icon: '✨', text: 'Personalized assessment based on your skills' },
+              { icon: '🎯', text: 'Smart AI recommendations' },
+              { icon: '📊', text: 'Detailed progress tracking' },
+              { icon: '🏆', text: 'Guidance toward your ideal specialization' }
             ].map((feature, index) => (
               <div
                 key={index}
@@ -215,13 +215,13 @@ function Register({ onLogin }) {
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent'
             }}>
-              Inscription
+              Sign up
             </h2>
             <p style={{
               color: '#718096',
               fontSize: '1rem'
             }}>
-              Créez votre compte en quelques secondes
+              Create your account in a few seconds
             </p>
           </div>
 
@@ -248,7 +248,7 @@ function Register({ onLogin }) {
                 color: '#4a5568',
                 fontSize: '0.95rem'
               }}>
-                Nom d'utilisateur
+                Username
               </label>
               <input
                 type="text"
@@ -318,7 +318,7 @@ function Register({ onLogin }) {
                 color: '#4a5568',
                 fontSize: '0.95rem'
               }}>
-                Mot de passe
+                Password
               </label>
               <input
                 type="password"
@@ -353,7 +353,7 @@ function Register({ onLogin }) {
                 color: '#4a5568',
                 fontSize: '0.95rem'
               }}>
-                Confirmer le mot de passe
+                Confirm password
               </label>
               <input
                 type="password"
@@ -404,7 +404,7 @@ function Register({ onLogin }) {
                 e.currentTarget.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.4)';
               }}
             >
-              S'inscrire
+              Sign up
             </button>
           </form>
 
@@ -414,7 +414,7 @@ function Register({ onLogin }) {
             borderTop: '1px solid #e2e8f0'
           }}>
             <p style={{ color: '#718096', marginBottom: '16px' }}>
-              Déjà un compte ?
+              Already have an account?
             </p>
             <Link
               to="/login"
@@ -440,7 +440,7 @@ function Register({ onLogin }) {
                 e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
-              Se connecter
+              Login
             </Link>
           </div>
         </div>

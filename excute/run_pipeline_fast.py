@@ -25,6 +25,9 @@ os.makedirs('results', exist_ok=True)
 # Load data
 print("\n[1/5] Loading dataset...")
 df = pd.read_csv('dataset/student_tests.csv')
+df = df.dropna(subset=['filiere', 'specialization_label']).copy()
+df['filiere'] = df['filiere'].astype(str).str.strip()
+df['specialization_label'] = df['specialization_label'].astype(str).str.strip()
 print(f"Dataset shape: {df.shape}")
 
 # Preprocessing

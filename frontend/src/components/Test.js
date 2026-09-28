@@ -41,12 +41,12 @@ function Test({ user }) {
       if (response.data && response.data.length > 0) {
         setQuestions(response.data);
       } else {
-        setError('Aucune question disponible pour cette filière');
+        setError('No questions are available for this path.');
       }
       setLoading(false);
     } catch (error) {
       console.error('Error fetching questions:', error);
-      setError('Erreur lors du chargement des questions. Veuillez réessayer.');
+      setError('Unable to load questions. Please try again.');
       setLoading(false);
     }
   };
@@ -68,7 +68,7 @@ function Test({ user }) {
   };
 
   const handleCancelTest = () => {
-    if (window.confirm('Êtes-vous sûr de vouloir annuler ce test ? Vos réponses ne seront pas sauvegardées.')) {
+    if (window.confirm('Are you sure you want to cancel this assessment? Your answers will not be saved.')) {
       navigate('/dashboard');
     }
   };
@@ -86,19 +86,11 @@ function Test({ user }) {
       console.log('[TEST] Number of answers:', Object.keys(answers).length);
       console.log('[TEST] Number of questions:', questions.length);
 
-      // Calculate scores based on answers
-      // Answer values are 0-3 (indices), we'll use them directly as scores
-      const totalQuestions = questions.length;
-      const answeredQuestions = Object.keys(answers).length;
-      
-      // Calculate average answer value (0-3 scale)
-      const totalAnswerValue = Object.values(answers).reduce((sum, val) => sum + (val || 0), 0);
-      const avgAnswerValue = answeredQuestions > 0 ? totalAnswerValue / answeredQuestions : 0;
-      
-      // Convert to 0-100 scale (multiply by 33.33 to get max 100)
-      const practicalScore = Math.min(100, (avgAnswerValue / 3) * 100);
-      const logicalScore = Math.min(100, practicalScore + (Math.random() * 10 - 5));
-      const problemScore = Math.min(100, practicalScore + (Math.random() * 10 - 5));
+      // The backend calculates the official practical score from correct answers.
+      // There are no separate logical-reasoning or problem-solving sections yet.
+      const practicalScore = 0;
+      const logicalScore = 0;
+      const problemScore = 0;
 
       console.log('[TEST] Calculated scores:', {
         practical: practicalScore,
@@ -107,10 +99,13 @@ function Test({ user }) {
         time: scores.time_spent_minutes || 30
       });
 
-      // Ensure all questions have an answer (default to 0 if not answered)
+      // Keep unanswered questions out of the answers map so option 0 is not
+      // incorrectly counted as a selected answer.
       const completeAnswers = {};
       questions.forEach((q) => {
-        completeAnswers[q.id] = answers[q.id] !== undefined ? answers[q.id] : 0;
+        if (answers[q.id] !== undefined) {
+          completeAnswers[q.id] = answers[q.id];
+        }
       });
 
       console.log('[TEST] Complete answers:', completeAnswers);
@@ -131,19 +126,19 @@ function Test({ user }) {
           state: { prediction: response.data },
         });
       } else {
-        throw new Error('Réponse invalide du serveur');
+        throw new Error('Invalid response from the server.');
       }
     } catch (error) {
       console.error('[TEST] Error submitting test:', error);
       console.error('[TEST] Error response:', error.response);
-      const errorMessage = error.response?.data?.detail || error.response?.data?.message || error.message || 'Erreur lors de la soumission du test';
-      setError(`Erreur: ${errorMessage}`);
+      const errorMessage = error.response?.data?.detail || error.response?.data?.message || error.message || 'Unable to submit the assessment.';
+      setError(`Error: ${errorMessage}`);
       setSubmitting(false);
     }
   };
 
   if (loading) {
-    return <div className="loading">Chargement des questions...</div>;
+    return <div className="loading">Loading questions...</div>;
   }
 
   if (error) {
@@ -156,7 +151,7 @@ function Test({ user }) {
             className="btn btn-primary"
             style={{ marginTop: '20px' }}
           >
-            Retour au choix de filière
+            Back to path selection
           </button>
         </div>
       </div>
@@ -167,13 +162,13 @@ function Test({ user }) {
     return (
       <div className="container" style={{ maxWidth: '800px', marginTop: '50px' }}>
         <div className="card">
-          <div className="error">Aucune question disponible pour cette filière</div>
+          <div className="error">No questions are available for this path.</div>
           <button 
             onClick={() => navigate('/select-filiere')} 
             className="btn btn-primary"
             style={{ marginTop: '20px' }}
           >
-            Retour au choix de filière
+            Back to path selection
           </button>
         </div>
       </div>
@@ -193,7 +188,7 @@ function Test({ user }) {
           marginBottom: '20px'
         }}>
           <h2 style={{ margin: 0, color: '#667eea' }}>
-            Test de Spécialisation - {filiere}
+            Specialization Assessment - {filiere}
           </h2>
           <button
             onClick={handleCancelTest}
@@ -222,7 +217,7 @@ function Test({ user }) {
             }}
           >
             <span>✕</span>
-            Annuler ce test
+            Cancel assessment
           </button>
         </div>
 
@@ -253,7 +248,7 @@ function Test({ user }) {
         <div className="question-card">
           <h3>{question.question}</h3>
           <p style={{ color: '#666', marginBottom: '15px', fontSize: '14px' }}>
-            Compétence: {question.skill}
+            Skill: {question.skill}
           </p>
           <div>
             {question.options.map((option, index) => (
@@ -280,7 +275,7 @@ function Test({ user }) {
             onClick={handlePrevious}
             disabled={currentQuestion === 0 || submitting}
           >
-            Précédent
+            Previous
           </button>
 
           {currentQuestion === questions.length - 1 ? (
@@ -293,11 +288,11 @@ function Test({ user }) {
                 cursor: submitting ? 'not-allowed' : 'pointer'
               }}
             >
-              {submitting ? 'Soumission en cours...' : 'Soumettre le test'}
+              {submitting ? 'Submitting...' : 'Submit assessment'}
             </button>
           ) : (
             <button className="btn btn-primary" onClick={handleNext}>
-              Suivant
+              Next
             </button>
           )}
         </div>

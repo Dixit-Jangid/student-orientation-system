@@ -129,13 +129,13 @@ class RecommendationSystem:
         # Determine improvement message
         if previous_level and current_level:
             if current_level > previous_level:
-                improvement_message = "Bravo, votre niveau s'est amélioré ! Continuez sur cette voie."
+                improvement_message = "Great work, your level has improved! Keep it up."
             elif current_level == previous_level:
-                improvement_message = "Votre niveau est stable. Votre progression nécessite plus de pratique."
+                improvement_message = "Your level is stable. More practice will help you progress."
             else:
-                improvement_message = "Votre niveau a diminué. Il est temps de revoir les bases et de pratiquer davantage."
+                improvement_message = "Your level has decreased. Review the fundamentals and practice more."
         else:
-            improvement_message = "Continuez à pratiquer pour améliorer vos compétences."
+            improvement_message = "Keep practicing to improve your skills."
         
         # Get feature importance for predicted specialization
         # Identify which features are most important for this specialization

@@ -32,6 +32,7 @@ function App() {
     } catch (error) {
       localStorage.removeItem('token');
       delete api.defaults.headers.common['Authorization'];
+      setUser(null);
     } finally {
       setLoading(false);
     }
@@ -62,7 +63,7 @@ function App() {
   };
 
   if (loading) {
-    return <div className="loading">Chargement...</div>;
+    return <div className="loading">Loading...</div>;
   }
 
   return (

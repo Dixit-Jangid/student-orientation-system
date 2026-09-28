@@ -43,6 +43,9 @@ class MLPipeline:
         """Load dataset"""
         print("Loading dataset...")
         self.df = pd.read_csv(self.data_path)
+        self.df = self.df.dropna(subset=['filiere', 'specialization_label']).copy()
+        self.df['filiere'] = self.df['filiere'].astype(str).str.strip()
+        self.df['specialization_label'] = self.df['specialization_label'].astype(str).str.strip()
         print(f"Dataset shape: {self.df.shape}")
         return self.df
     
@@ -109,9 +112,10 @@ class MLPipeline:
         X = df[feature_cols].copy()
         y = df['specialization_label'].copy()
         
-        # Encode target variable
-        y_encoded = LabelEncoder().fit_transform(y)
-        self.class_names = LabelEncoder().fit(y).classes_
+        # Encode target variable once so class names match encoded labels.
+        target_encoder = LabelEncoder()
+        y_encoded = target_encoder.fit_transform(y)
+        self.class_names = target_encoder.classes_
         
         # 1.5 Train/Validation/Test split
         print("\n1.4 Train/Validation/Test split...")
@@ -159,43 +163,43 @@ class MLPipeline:
         
         for name, model in models.items():
             print(f"\nTraining {name}...")
-            
+
             # Use scaled data for SVM and Neural Network
             if name in ['SVM', 'Neural Network']:
                 X_train = self.X_train_scaled
                 X_val = self.X_val_scaled
+                y_train_local = self.y_train
+                y_val_local = self.y_val
+
                 # Performance safeguard: downsample for heavy models on large datasets
                 max_samples = 20000
                 if X_train.shape[0] > max_samples:
                     # stratified downsample to keep class balance
-                    X_train, _, y_down, _ = train_test_split(
+                    X_train, _, y_train_local, _ = train_test_split(
                         X_train, self.y_train,
                         train_size=max_samples,
                         stratify=self.y_train,
                         random_state=42
                     )
-                    # Align y for training subset
-                    y_train_local = y_down
-                else:
-                    y_train_local = self.y_train
             else:
                 X_train = self.X_train
                 X_val = self.X_val
                 y_train_local = self.y_train
-            
+                y_val_local = self.y_val
+
             # Train model
             model.fit(X_train, y_train_local)
-            
+
             # Predictions
             y_train_pred = model.predict(X_train)
             y_val_pred = model.predict(X_val)
-            
-            # Calculate metrics
-            train_acc = accuracy_score(self.y_train, y_train_pred)
-            val_acc = accuracy_score(self.y_val, y_val_pred)
-            
-            train_f1 = f1_score(self.y_train, y_train_pred, average='weighted')
-            val_f1 = f1_score(self.y_val, y_val_pred, average='weighted')
+
+            # Calculate metrics using the actual training labels for this branch
+            train_acc = accuracy_score(y_train_local, y_train_pred)
+            val_acc = accuracy_score(y_val_local, y_val_pred)
+
+            train_f1 = f1_score(y_train_local, y_train_pred, average='weighted')
+            val_f1 = f1_score(y_val_local, y_val_pred, average='weighted')
             
             results[name] = {
                 'model': model,

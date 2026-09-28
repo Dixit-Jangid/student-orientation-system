@@ -55,11 +55,11 @@ function OldAdminDashboard({ user, onLogout, onBackToNew }) {
   };
 
   if (loading) {
-    return <div className="loading">Chargement du tableau de bord admin...</div>;
+    return <div className="loading">Loading admin dashboard...</div>;
   }
 
   if (!dashboardData) {
-    return <div className="error">Erreur lors du chargement des données</div>;
+    return <div className="error">Unable to load dashboard data.</div>;
   }
 
   const filiereChartData = dashboardData.filiere_distribution?.map(d => ({
@@ -81,7 +81,7 @@ function OldAdminDashboard({ user, onLogout, onBackToNew }) {
     <div>
       <nav className="navbar">
         <div className="navbar-content">
-          <h1>Tableau de Bord Admin - Monitoring ML</h1>
+          <h1>UniGuide Admin - ML Monitoring</h1>
           <div className="navbar-actions">
             {onBackToNew && (
               <button 
@@ -92,7 +92,7 @@ function OldAdminDashboard({ user, onLogout, onBackToNew }) {
                 📊 Nouveau Dashboard
               </button>
             )}
-            <button onClick={onLogout} className="btn btn-secondary">Déconnexion</button>
+            <button onClick={onLogout} className="btn btn-secondary">Logout</button>
           </div>
         </div>
       </nav>
@@ -103,10 +103,10 @@ function OldAdminDashboard({ user, onLogout, onBackToNew }) {
           <h2 className="text-gradient" style={{ marginBottom: '12px' }}>Actions</h2>
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
             <button onClick={triggerRetrain} className="btn btn-primary">
-              {retrainStatus === 'starting' ? 'Démarrage...' : 'Relancer l\'entraînement'}
+              {retrainStatus === 'starting' ? 'Starting...' : 'Retrain model'}
             </button>
-            {retrainStatus === 'started' && <div className="success">Réentraînement lancé en arrière-plan.</div>}
-            {retrainStatus === 'error' && <div className="error">Erreur lors du lancement.</div>}
+            {retrainStatus === 'started' && <div className="success">Retraining started in the background.</div>}
+            {retrainStatus === 'error' && <div className="error">Unable to start retraining.</div>}
           </div>
         </div>
 
@@ -184,7 +184,7 @@ function OldAdminDashboard({ user, onLogout, onBackToNew }) {
         {/* Filière Distribution */}
         {filiereChartData.length > 0 && (
           <div className="card">
-            <h3 className="text-gradient" style={{ marginBottom: '24px' }}>Distribution par Filière</h3>
+            <h3 className="text-gradient" style={{ marginBottom: '24px' }}>Path Distribution</h3>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={filiereChartData}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -344,7 +344,7 @@ function OldAdminDashboard({ user, onLogout, onBackToNew }) {
         {/* Specialization Distribution */}
         {specChartData.length > 0 && (
           <div className="card">
-            <h3 className="text-gradient" style={{ marginBottom: '24px' }}>Top 10 Spécialisations Prédites</h3>
+            <h3 className="text-gradient" style={{ marginBottom: '24px' }}>Top 10 Predicted Specializations</h3>
             <ResponsiveContainer width="100%" height={400}>
               <BarChart data={specChartData} layout="vertical">
                 <CartesianGrid strokeDasharray="3 3" />
@@ -381,7 +381,7 @@ function OldAdminDashboard({ user, onLogout, onBackToNew }) {
             <h3 className="text-gradient" style={{ marginBottom: '24px' }}>Scores Moyens</h3>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
               <div>
-                <h4>Test Pratique</h4>
+                <h4>Practical Test</h4>
                 <p style={{ fontSize: '1.5em', fontWeight: 'bold' }}>
                   {dashboardData.average_scores.practical?.toFixed(1) || 0}/100
                 </p>
@@ -393,7 +393,7 @@ function OldAdminDashboard({ user, onLogout, onBackToNew }) {
                 </p>
               </div>
               <div>
-                <h4>Résolution de Problèmes</h4>
+                <h4>Problem Solving</h4>
                 <p style={{ fontSize: '1.5em', fontWeight: 'bold' }}>
                   {dashboardData.average_scores.problem_solving?.toFixed(1) || 0}/100
                 </p>

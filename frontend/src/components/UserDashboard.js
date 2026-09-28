@@ -4,6 +4,11 @@ import api from '../services/api';
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 
 function UserDashboard({ user, onLogout }) {
+  const pathLabels = {
+    "Intelligence Artificielle & Sciences des Données": "Artificial Intelligence & Data Science",
+    "Cybersécurité & Infrastructures Réseaux": "Cybersecurity & Network Infrastructure",
+    "Développement Digital & Systèmes d'Information": "Digital Development & Information Systems",
+  };
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -29,17 +34,17 @@ function UserDashboard({ user, onLogout }) {
   };
 
   if (loading) {
-    return <div className="loading">Chargement du tableau de bord...</div>;
+    return <div className="loading">Loading dashboard...</div>;
   }
 
   if (!dashboardData || !dashboardData.has_test) {
     return (
       <div className="container">
         <div className="card">
-          <h2>Bienvenue, {user.username}!</h2>
-          <p>Passez un test pour voir votre tableau de bord personnalisé.</p>
+          <h2>Welcome, {user.username}!</h2>
+          <p>Complete an assessment to see your personalized dashboard.</p>
           <Link to="/test" className="btn btn-primary">
-            Passer un test
+            Take an assessment
           </Link>
         </div>
       </div>
@@ -61,12 +66,12 @@ function UserDashboard({ user, onLogout }) {
     }}>
       <nav className="navbar">
         <div className="navbar-content">
-          <h1>Tableau de Bord - {user.username}</h1>
+          <h1>Dashboard - {user.username}</h1>
           <div className="navbar-actions">
-            <Link to="/history" className="btn btn-secondary">Historique</Link>
-            <Link to="/progress" className="btn btn-secondary">Progression</Link>
-            <Link to="/select-filiere" className="btn btn-primary">Nouveau test</Link>
-            <button onClick={onLogout} className="btn btn-secondary">Déconnexion</button>
+            <Link to="/history" className="btn btn-secondary">History</Link>
+            <Link to="/progress" className="btn btn-secondary">Progress</Link>
+            <Link to="/select-filiere" className="btn btn-primary">New assessment</Link>
+            <button onClick={onLogout} className="btn btn-secondary">Logout</button>
           </div>
         </div>
       </nav>
@@ -81,7 +86,7 @@ function UserDashboard({ user, onLogout }) {
           <div style={{
             padding: '20px',
             borderRadius: '12px',
-            background: dashboardData.improvement_message.includes('amélioré') 
+            background: dashboardData.improvement_message.toLowerCase().includes('improved')
               ? 'linear-gradient(135deg, #68d391 0%, #48bb78 100%)'
               : 'linear-gradient(135deg, #fc8181 0%, #f56565 100%)',
             color: 'white',
@@ -107,7 +112,7 @@ function UserDashboard({ user, onLogout }) {
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent'
           }}>
-            🎯 Votre Spécialisation Recommandée
+            🎯 Your Recommended Specialization
           </h2>
           
           <div style={{ 
@@ -138,7 +143,7 @@ function UserDashboard({ user, onLogout }) {
               marginBottom: '12px'
             }}>
               <p style={{ fontWeight: 700, fontSize: '1.125rem', color: '#4a5568' }}>
-                Confiance: {(dashboardData.confidence * 100).toFixed(1)}%
+                Confidence: {(dashboardData.confidence * 100).toFixed(1)}%
               </p>
               <div style={{
                 background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
@@ -148,9 +153,9 @@ function UserDashboard({ user, onLogout }) {
                 fontSize: '0.9rem',
                 fontWeight: 600
               }}>
-                {dashboardData.confidence >= 0.8 ? 'Très élevée' : 
-                 dashboardData.confidence >= 0.6 ? 'Élevée' : 
-                 dashboardData.confidence >= 0.4 ? 'Moyenne' : 'Faible'}
+                {dashboardData.confidence >= 0.8 ? 'Very high' :
+                 dashboardData.confidence >= 0.6 ? 'High' :
+                 dashboardData.confidence >= 0.4 ? 'Medium' : 'Low'}
               </div>
             </div>
             <div style={{
@@ -196,9 +201,9 @@ function UserDashboard({ user, onLogout }) {
               textAlign: 'center'
             }}>
               <div style={{ fontSize: '1.5rem', marginBottom: '8px' }}>🎓</div>
-              <div style={{ fontSize: '0.9rem', color: '#718096', marginBottom: '8px' }}>Filière</div>
+              <div style={{ fontSize: '0.9rem', color: '#718096', marginBottom: '8px' }}>Path</div>
               <div style={{ fontSize: '1.3rem', fontWeight: 700, color: '#667eea' }}>
-                {dashboardData.current_filiere}
+                {pathLabels[dashboardData.current_filiere] || dashboardData.current_filiere}
               </div>
             </div>
             <div style={{ 
@@ -209,7 +214,7 @@ function UserDashboard({ user, onLogout }) {
               textAlign: 'center'
             }}>
               <div style={{ fontSize: '1.5rem', marginBottom: '8px' }}>⭐</div>
-              <div style={{ fontSize: '0.9rem', color: '#718096', marginBottom: '8px' }}>Niveau</div>
+              <div style={{ fontSize: '0.9rem', color: '#718096', marginBottom: '8px' }}>Level</div>
               <div style={{ fontSize: '1.3rem', fontWeight: 700, color: '#f093fb' }}>
                 {dashboardData.level_name} ({dashboardData.current_level}/5)
               </div>
@@ -231,7 +236,7 @@ function UserDashboard({ user, onLogout }) {
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent'
             }}>
-              🏆 Top 3 Spécialisations Alternatives
+              🏆 Top 3 Alternative Specializations
             </h2>
             <div style={{ display: 'grid', gap: '20px' }}>
               {dashboardData.top_3_specializations.slice(0, 3).map((spec, index) => (
@@ -324,7 +329,7 @@ function UserDashboard({ user, onLogout }) {
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent'
             }}>
-              📊 Compétences (Radar)
+              📊 Skills (Radar)
             </h2>
             <ResponsiveContainer width="100%" height={500}>
               <RadarChart data={radarData}>
@@ -400,7 +405,7 @@ function UserDashboard({ user, onLogout }) {
             onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div>
-                  <h4 style={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.9rem', fontWeight: 600, marginBottom: '8px' }}>TEST PRATIQUE</h4>
+                  <h4 style={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.9rem', fontWeight: 600, marginBottom: '8px' }}>PRACTICAL TEST</h4>
                   <p style={{ fontSize: '3rem', fontWeight: 800, margin: 0 }}>
                     {dashboardData.practical_score?.toFixed(1) || 0}
                   </p>
@@ -440,7 +445,7 @@ function UserDashboard({ user, onLogout }) {
             onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div>
-                  <h4 style={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.9rem', fontWeight: 600, marginBottom: '8px' }}>RÉSOLUTION PROBLÈMES</h4>
+                  <h4 style={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.9rem', fontWeight: 600, marginBottom: '8px' }}>PROBLEM SOLVING</h4>
                   <p style={{ fontSize: '3rem', fontWeight: 800, margin: 0 }}>
                     {dashboardData.problem_solving_score?.toFixed(1) || 0}
                   </p>
@@ -466,7 +471,7 @@ function UserDashboard({ user, onLogout }) {
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent'
             }}>
-              📋 Historique des Tests
+              📋 Assessment History
             </h2>
             <div style={{ display: 'grid', gap: '16px' }}>
               {dashboardData.test_history.slice(0, 5).map((test, index) => (
@@ -514,7 +519,7 @@ function UserDashboard({ user, onLogout }) {
                         {test.specialization}
                       </strong>
                       <p style={{ margin: 0, color: '#718096', fontSize: '0.9rem' }}>
-                        {new Date(test.date).toLocaleDateString('fr-FR', { 
+                        {new Date(test.date).toLocaleDateString('en-US', { 
                           year: 'numeric', 
                           month: 'long', 
                           day: 'numeric' 
@@ -533,7 +538,7 @@ function UserDashboard({ user, onLogout }) {
                       marginBottom: '8px',
                       display: 'inline-block'
                     }}>
-                      Niveau {test.level}/5
+                      Level {test.level}/5
                     </div>
                     <p style={{ fontSize: '0.9rem', color: '#718096', margin: 0 }}>
                       Score: {test.score.toFixed(1)}/100
@@ -557,7 +562,7 @@ function UserDashboard({ user, onLogout }) {
                   fontWeight: 600
                 }}
               >
-                Voir tout l'historique ({dashboardData.test_history.length} tests) →
+                View full history ({dashboardData.test_history.length} tests) →
               </Link>
             )}
           </div>

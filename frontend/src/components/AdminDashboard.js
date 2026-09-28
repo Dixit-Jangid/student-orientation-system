@@ -38,11 +38,11 @@ function AdminDashboard({ user, onLogout }) {
   };
 
   if (loading) {
-    return <div className="loading">Chargement du tableau de bord admin...</div>;
+    return <div className="loading">Loading admin dashboard...</div>;
   }
 
   if (!dashboardData) {
-    return <div className="error">Erreur lors du chargement des données</div>;
+    return <div className="error">Unable to load dashboard data.</div>;
   }
 
   // Prepare chart data
@@ -69,15 +69,15 @@ function AdminDashboard({ user, onLogout }) {
 
   // Navigation items
   const navigationItems = [
-    { id: 'overview', name: '📊 Vue d\'ensemble', icon: '📊' },
-    { id: 'filiere', name: 'Distribution Filières', icon: '🎓' },
-    { id: 'specializations', name: 'Classification Classes', icon: '🎯' },
-    { id: 'top-specializations', name: 'Top 10 Spécialisations', icon: '🏆' },
-    { id: 'questions', name: 'Scores par Question', icon: '❓' },
+    { id: 'overview', name: '📊 Overview', icon: '📊' },
+    { id: 'filiere', name: 'Path Distribution', icon: '🎓' },
+    { id: 'specializations', name: 'Class Distribution', icon: '🎯' },
+    { id: 'top-specializations', name: 'Top 10 Specializations', icon: '🏆' },
+    { id: 'questions', name: 'Scores by Question', icon: '❓' },
     { id: 'top-questions', name: 'Top 10 Questions', icon: '⭐' },
-    { id: 'comparison', name: 'Comparaison Filières', icon: '🔗' },
-    { id: 'global-scores', name: 'Scores Globaux', icon: '📈' },
-    { id: 'evolution', name: 'Évolution Questions', icon: '📉' }
+    { id: 'comparison', name: 'Path Comparison', icon: '🔗' },
+    { id: 'global-scores', name: 'Global Scores', icon: '📈' },
+    { id: 'evolution', name: 'Question Trends', icon: '📉' }
   ];
 
   const handleViewChange = (viewId) => {
@@ -204,7 +204,7 @@ function AdminDashboard({ user, onLogout }) {
           border: '1px solid rgba(102, 126, 234, 0.3)'
         }}>
           <p style={{ fontSize: '0.8rem', color: '#a0aec0', margin: 0, lineHeight: '1.5' }}>
-            💡 Cliquez sur une visualisation pour la voir en détail. Cliquez en dehors pour revenir à la vue d'ensemble.
+            💡 Select a visualization to view its details. Click outside to return to the overview.
           </p>
         </div>
       </div>
@@ -219,9 +219,9 @@ function AdminDashboard({ user, onLogout }) {
       }}>
         <nav className="navbar">
           <div className="navbar-content">
-            <h1>Tableau de Bord Admin - Visualisations</h1>
+            <h1>UniGuide Admin Dashboard</h1>
             <div className="navbar-actions">
-              <button onClick={onLogout} className="btn btn-secondary">Déconnexion</button>
+              <button onClick={onLogout} className="btn btn-secondary">Logout</button>
             </div>
           </div>
         </nav>
@@ -274,7 +274,7 @@ function AdminDashboard({ user, onLogout }) {
                 e.currentTarget.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.4)';
               }}
             >
-              <span>←</span> Retour à la vue d'ensemble
+              <span>←</span> Back to overview
             </button>
           </div>
         )}
@@ -333,7 +333,7 @@ function AdminDashboard({ user, onLogout }) {
           onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
-                <h3 style={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.9rem', fontWeight: 600, marginBottom: '8px' }}>FILIÈRES</h3>
+                <h3 style={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.9rem', fontWeight: 600, marginBottom: '8px' }}>PATHS</h3>
                 <p style={{ fontSize: '3rem', fontWeight: 800, margin: 0 }}>{filiereChartData.length}</p>
               </div>
               <div style={{ fontSize: '3rem', opacity: 0.3 }}>🎓</div>
@@ -350,7 +350,7 @@ function AdminDashboard({ user, onLogout }) {
           onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
-                <h3 style={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.9rem', fontWeight: 600, marginBottom: '8px' }}>SPÉCIALISATIONS</h3>
+                <h3 style={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.9rem', fontWeight: 600, marginBottom: '8px' }}>SPECIALIZATIONS</h3>
                 <p style={{ fontSize: '3rem', fontWeight: 800, margin: 0 }}>{allSpecData.length}</p>
               </div>
               <div style={{ fontSize: '3rem', opacity: 0.3 }}>⭐</div>
@@ -372,7 +372,7 @@ function AdminDashboard({ user, onLogout }) {
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
-              <h2 className="text-gradient" style={{ margin: 0, fontSize: '1.8rem' }}>📊 Distribution par Filière</h2>
+              <h2 className="text-gradient" style={{ margin: 0, fontSize: '1.8rem' }}>📊 Path Distribution</h2>
               <div style={{ 
                 background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                 color: 'white',
@@ -497,7 +497,7 @@ function AdminDashboard({ user, onLogout }) {
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
-              <h2 className="text-gradient" style={{ margin: 0, fontSize: '1.8rem' }}>🎯 Classification des Classes - Toutes les Spécialisations</h2>
+              <h2 className="text-gradient" style={{ margin: 0, fontSize: '1.8rem' }}>🎯 Class Distribution - All Specializations</h2>
               <div style={{ 
                 background: 'linear-gradient(135deg, #764ba2 0%, #f093fb 100%)',
                 color: 'white',
@@ -506,7 +506,7 @@ function AdminDashboard({ user, onLogout }) {
                 fontSize: '0.9rem',
                 fontWeight: 600
               }}>
-                {allSpecData.length} spécialisations
+                {allSpecData.length} specializations
               </div>
             </div>
             <ResponsiveContainer width="100%" height={600}>
@@ -525,7 +525,7 @@ function AdminDashboard({ user, onLogout }) {
                 />
                 <Tooltip 
                   formatter={(value, name) => [`${value} tests`, 'Nombre']}
-                  labelFormatter={(label) => `Spécialisation: ${label}`}
+                  labelFormatter={(label) => `Specialization: ${label}`}
                   contentStyle={{ 
                     background: 'rgba(255, 255, 255, 0.95)', 
                     border: '1px solid #e2e8f0',
@@ -580,7 +580,7 @@ function AdminDashboard({ user, onLogout }) {
         {shouldShowSection('top-specializations') && topSpecData.length > 0 && (
           <div className="card" style={{ marginBottom: '40px', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
-              <h2 className="text-gradient" style={{ margin: 0, fontSize: '1.8rem' }}>🏆 Top 10 Spécialisations</h2>
+              <h2 className="text-gradient" style={{ margin: 0, fontSize: '1.8rem' }}>🏆 Top 10 Specializations</h2>
               <div style={{ 
                 background: 'linear-gradient(135deg, #f093fb 0%, #4facfe 100%)',
                 color: 'white',
@@ -944,11 +944,11 @@ function AdminDashboard({ user, onLogout }) {
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="text-gradient" style={{ marginBottom: '24px', fontSize: '1.8rem' }}>🔗 Comparaison Filières et Spécialisations</h2>
+            <h2 className="text-gradient" style={{ marginBottom: '24px', fontSize: '1.8rem' }}>🔗 Path and Specialization Comparison</h2>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px' }}>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-                  <h3 style={{ margin: 0, color: '#667eea', fontSize: '1.2rem', fontWeight: 700 }}>📚 Par Filière</h3>
+                  <h3 style={{ margin: 0, color: '#667eea', fontSize: '1.2rem', fontWeight: 700 }}>📚 By Path</h3>
                   <div style={{ 
                     background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                     color: 'white',
@@ -957,7 +957,7 @@ function AdminDashboard({ user, onLogout }) {
                     fontSize: '0.8rem',
                     fontWeight: 600
                   }}>
-                    {filiereChartData.length} filières
+                    {filiereChartData.length} paths
                   </div>
                 </div>
                 <ResponsiveContainer width="100%" height={350}>
@@ -989,7 +989,7 @@ function AdminDashboard({ user, onLogout }) {
               </div>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-                  <h3 style={{ margin: 0, color: '#764ba2', fontSize: '1.2rem', fontWeight: 700 }}>⭐ Top Spécialisations</h3>
+                  <h3 style={{ margin: 0, color: '#764ba2', fontSize: '1.2rem', fontWeight: 700 }}>⭐ Top Specializations</h3>
                   <div style={{ 
                     background: 'linear-gradient(135deg, #764ba2 0%, #f093fb 100%)',
                     color: 'white',
@@ -1060,9 +1060,9 @@ function AdminDashboard({ user, onLogout }) {
             <ResponsiveContainer width="100%" height={400}>
               <BarChart 
                 data={[
-                  { name: 'Test Pratique', score: dashboardData.average_scores.practical || 0, color: '#4facfe' },
+                  { name: 'Practical Test', score: dashboardData.average_scores.practical || 0, color: '#4facfe' },
                   { name: 'Raisonnement Logique', score: dashboardData.average_scores.logical || 0, color: '#00f2fe' },
-                  { name: 'Résolution Problèmes', score: dashboardData.average_scores.problem_solving || 0, color: '#68d391' }
+                  { name: 'Problem Solving', score: dashboardData.average_scores.problem_solving || 0, color: '#68d391' }
                 ]}
                 margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
               >
@@ -1109,9 +1109,9 @@ function AdminDashboard({ user, onLogout }) {
               gap: '16px'
             }}>
               {[
-                { label: 'Test Pratique', score: dashboardData.average_scores.practical || 0, color: '#4facfe', icon: '💼' },
+                { label: 'Practical Test', score: dashboardData.average_scores.practical || 0, color: '#4facfe', icon: '💼' },
                 { label: 'Raisonnement Logique', score: dashboardData.average_scores.logical || 0, color: '#00f2fe', icon: '🧠' },
-                { label: 'Résolution Problèmes', score: dashboardData.average_scores.problem_solving || 0, color: '#68d391', icon: '🔧' }
+                { label: 'Problem Solving', score: dashboardData.average_scores.problem_solving || 0, color: '#68d391', icon: '🔧' }
               ].map((item, index) => (
                 <div 
                   key={index}
@@ -1164,7 +1164,7 @@ function AdminDashboard({ user, onLogout }) {
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
-              <h2 className="text-gradient" style={{ margin: 0, fontSize: '1.8rem' }}>📉 Évolution des Scores par Question</h2>
+              <h2 className="text-gradient" style={{ margin: 0, fontSize: '1.8rem' }}>📉 Question Score Trends</h2>
               <div style={{ 
                 background: 'linear-gradient(135deg, #f093fb 0%, #fc8181 100%)',
                 color: 'white',
@@ -1256,7 +1256,7 @@ function AdminDashboard({ user, onLogout }) {
                   {((parseFloat(questionData[questionData.length - 1]?.score || 0) - parseFloat(questionData[0]?.score || 0)) > 0 ? '+' : '') + 
                    ((parseFloat(questionData[questionData.length - 1]?.score || 0) - parseFloat(questionData[0]?.score || 0)) * 100).toFixed(1)}%
                 </div>
-                <div style={{ fontSize: '0.85rem', color: '#718096', marginTop: '4px' }}>Évolution</div>
+                <div style={{ fontSize: '0.85rem', color: '#718096', marginTop: '4px' }}>Trend</div>
               </div>
             </div>
           </div>

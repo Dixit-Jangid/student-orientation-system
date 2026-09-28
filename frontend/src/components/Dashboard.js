@@ -3,22 +3,31 @@ import { Link } from 'react-router-dom';
 
 function Dashboard({ user, onLogout }) {
   const filieres = [
-    "Intelligence Artificielle & Sciences des Données",
-    "Cybersécurité & Infrastructures Réseaux",
-    "Développement Digital & Systèmes d'Information",
+    {
+      label: "Artificial Intelligence & Data Science",
+      value: "Intelligence Artificielle & Sciences des Données",
+    },
+    {
+      label: "Cybersecurity & Network Infrastructure",
+      value: "Cybersécurité & Infrastructures Réseaux",
+    },
+    {
+      label: "Digital Development & Information Systems",
+      value: "Développement Digital & Systèmes d'Information",
+    },
   ];
 
   return (
     <div>
       <nav className="navbar">
         <div className="navbar-content">
-          <h1>Système de Prédiction de Spécialisation</h1>
+          <h1>UniGuide</h1>
           <div className="navbar-actions">
-            <span style={{ marginRight: '20px' }}>Bonjour, {user.username}!</span>
-            <Link to="/history" className="btn btn-secondary">Historique</Link>
-            <Link to="/progress" className="btn btn-secondary">Progression</Link>
+            <span style={{ marginRight: '20px' }}>Hello, {user.username}!</span>
+            <Link to="/history" className="btn btn-secondary">History</Link>
+            <Link to="/progress" className="btn btn-secondary">Progress</Link>
             <button onClick={onLogout} className="btn btn-secondary">
-              Déconnexion
+              Logout
             </button>
           </div>
         </div>
@@ -27,19 +36,18 @@ function Dashboard({ user, onLogout }) {
       <div className="container">
         <div className="card">
           <h2 style={{ marginBottom: '30px', color: '#667eea' }}>
-            Choisissez votre filière
+            Choose your specialization path
           </h2>
           <p style={{ marginBottom: '30px', color: '#666' }}>
-            Sélectionnez votre filière pour commencer le test de spécialisation.
-            Le système analysera vos compétences et vous recommandera la spécialisation
-            la plus adaptée à votre profil.
+            Select the path you want to explore. The system will evaluate your skills and
+            recommend the specialization that best matches your profile.
           </p>
 
           <div style={{ display: 'grid', gap: '20px' }}>
             {filieres.map((filiere, index) => (
               <Link
                 key={index}
-                to={`/test?filiere=${encodeURIComponent(filiere)}`}
+                to={`/test?filiere=${encodeURIComponent(filiere.value)}`}
                 style={{ textDecoration: 'none' }}
                 onClick={(e) => {
                   if (!user) {
@@ -58,9 +66,9 @@ function Dashboard({ user, onLogout }) {
                   onMouseEnter={(e) => (e.currentTarget.style.transform = 'translateY(-5px)')}
                   onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
                 >
-                  <h3 style={{ color: '#667eea', marginBottom: '10px' }}>{filiere}</h3>
+                  <h3 style={{ color: '#667eea', marginBottom: '10px' }}>{filiere.label}</h3>
                   <p style={{ color: '#666' }}>
-                    Cliquez pour commencer le test de spécialisation
+                    Click to start the specialization assessment
                   </p>
                 </div>
               </Link>

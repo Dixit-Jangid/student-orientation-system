@@ -42,7 +42,7 @@ function Login({ onLogin }) {
     } catch (err) {
       console.error('[LOGIN] Error:', err);
       console.error('[LOGIN] Error response:', err.response?.data);
-      setError(err.response?.data?.detail || 'Erreur de connexion');
+      setError(err.response?.data?.detail || 'Login failed. Please try again.');
     }
   };
 
@@ -107,14 +107,14 @@ function Login({ onLogin }) {
             lineHeight: '1.2',
             textShadow: '0 4px 20px rgba(0,0,0,0.2)'
           }}>
-            Système d'Orientation
+            UniGuide
             <br />
             <span style={{
               background: 'linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.8) 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent'
             }}>
-              Professionnelle
+              Career Guidance
             </span>
           </h1>
           <p style={{
@@ -123,8 +123,8 @@ function Login({ onLogin }) {
             opacity: 0.95,
             lineHeight: '1.6'
           }}>
-            Découvrez votre spécialisation idéale grâce à l'intelligence artificielle.
-            Testez vos compétences et obtenez des recommandations personnalisées.
+            Discover your ideal specialization with AI-powered guidance.
+            Assess your strengths and get personalized recommendations.
           </p>
 
           {/* Specializations Preview */}
@@ -135,9 +135,9 @@ function Login({ onLogin }) {
             marginTop: '40px'
           }}>
             {[
-              { icon: '🤖', name: 'IA & Data', color: '#4facfe' },
-              { icon: '🔒', name: 'Cybersécurité', color: '#f093fb' },
-              { icon: '💻', name: 'Développement', color: '#68d391' }
+              { icon: '🤖', name: 'AI & Data', color: '#4facfe' },
+              { icon: '🔒', name: 'Cybersecurity', color: '#f093fb' },
+              { icon: '💻', name: 'Development', color: '#68d391' }
             ].map((spec, index) => (
               <div
                 key={index}
@@ -166,7 +166,7 @@ function Login({ onLogin }) {
             ))}
           </div>
 
-          {/* Stats */}
+          {/* Quick overview */}
           <div style={{
             marginTop: '40px',
             display: 'flex',
@@ -174,16 +174,16 @@ function Login({ onLogin }) {
             opacity: 0.9
           }}>
             <div>
-              <div style={{ fontSize: '2rem', fontWeight: 800 }}>50K+</div>
-              <div style={{ fontSize: '0.9rem', opacity: 0.8 }}>Tests réalisés</div>
-            </div>
-            <div>
-              <div style={{ fontSize: '2rem', fontWeight: 800 }}>95%</div>
-              <div style={{ fontSize: '0.9rem', opacity: 0.8 }}>Précision IA</div>
-            </div>
-            <div>
               <div style={{ fontSize: '2rem', fontWeight: 800 }}>3</div>
-              <div style={{ fontSize: '0.9rem', opacity: 0.8 }}>Filières</div>
+              <div style={{ fontSize: '0.9rem', opacity: 0.8 }}>Career paths</div>
+            </div>
+            <div>
+              <div style={{ fontSize: '2rem', fontWeight: 800 }}>AI</div>
+              <div style={{ fontSize: '0.9rem', opacity: 0.8 }}>Guidance</div>
+            </div>
+            <div>
+              <div style={{ fontSize: '2rem', fontWeight: 800 }}>1</div>
+              <div style={{ fontSize: '0.9rem', opacity: 0.8 }}>Smart fit</div>
             </div>
           </div>
         </div>
@@ -217,13 +217,13 @@ function Login({ onLogin }) {
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent'
             }}>
-              Connexion
+              Login
             </h2>
             <p style={{
               color: '#718096',
               fontSize: '1rem'
             }}>
-              Accédez à votre tableau de bord personnalisé
+              Access your personalized dashboard
             </p>
           </div>
 
@@ -250,7 +250,7 @@ function Login({ onLogin }) {
                 color: '#4a5568',
                 fontSize: '0.95rem'
               }}>
-                Nom d'utilisateur
+                Username
               </label>
               <input
                 type="text"
@@ -285,7 +285,7 @@ function Login({ onLogin }) {
                 color: '#4a5568',
                 fontSize: '0.95rem'
               }}>
-                Mot de passe
+                Password
               </label>
               <input
                 type="password"
@@ -336,7 +336,7 @@ function Login({ onLogin }) {
                 e.currentTarget.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.4)';
               }}
             >
-              Se connecter
+              Login
             </button>
           </form>
 
@@ -346,7 +346,7 @@ function Login({ onLogin }) {
             borderTop: '1px solid #e2e8f0'
           }}>
             <p style={{ color: '#718096', marginBottom: '16px' }}>
-              Pas de compte ?
+              Don’t have an account?
             </p>
             <Link
               to="/register"
@@ -372,7 +372,7 @@ function Login({ onLogin }) {
                 e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
-              S'inscrire
+              Sign up
             </Link>
           </div>
         </div>

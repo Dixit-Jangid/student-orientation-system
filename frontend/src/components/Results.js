@@ -9,9 +9,9 @@ function Results({ user }) {
   if (!prediction) {
     return (
       <div className="container">
-        <div className="error">Résultats non disponibles</div>
+        <div className="error">Results are not available.</div>
         <Link to="/dashboard" className="btn btn-primary">
-          Retour au tableau de bord
+          Back to dashboard
         </Link>
       </div>
     );
@@ -24,22 +24,22 @@ function Results({ user }) {
     <div>
       <nav className="navbar">
         <div className="navbar-content">
-          <h1>Résultats du Test</h1>
+          <h1>Assessment Results</h1>
           <Link to="/dashboard" className="btn btn-secondary">
-            Tableau de bord
+            Dashboard
           </Link>
         </div>
       </nav>
 
       <div className="container">
         <div className="card results-card">
-          <h2>Votre Spécialisation Recommandée</h2>
+          <h2>Your Recommended Specialization</h2>
           <h1 style={{ fontSize: '2.5em', color: '#667eea', margin: '20px 0' }}>
             {predicted_specialization}
           </h1>
 
           <div style={{ margin: '30px 0' }}>
-            <p style={{ marginBottom: '10px', fontWeight: 'bold' }}>Confiance: {confidencePercent}%</p>
+            <p style={{ marginBottom: '10px', fontWeight: 'bold' }}>Confidence: {confidencePercent}%</p>
             <div className="confidence-bar">
               <div
                 className="confidence-fill"
@@ -90,21 +90,21 @@ function Results({ user }) {
           <>
             <div className="card">
               <h3 style={{ color: '#667eea', marginBottom: '20px' }}>
-                Recommandations Personnalisées
+                Personalized Recommendations
               </h3>
 
               {recommendations.skill_recommendations && recommendations.skill_recommendations.length > 0 && (
                 <div style={{ marginBottom: '30px' }}>
-                  <h4 style={{ marginBottom: '15px' }}>Compétences à améliorer:</h4>
+                  <h4 style={{ marginBottom: '15px' }}>Skills to improve:</h4>
                   {recommendations.skill_recommendations.map((rec, index) => (
                     <div key={index} style={{ marginBottom: '20px', padding: '15px', background: '#f8f9fa', borderRadius: '5px' }}>
                       <strong>{rec.skill}</strong>
                       <p style={{ marginTop: '5px', color: '#666' }}>
-                        Niveau actuel: {rec.current_level.toFixed(1)}/3.0
+                        Current level: {rec.current_level.toFixed(1)}/3.0
                       </p>
                       {rec.resources && rec.resources.length > 0 && (
                         <div style={{ marginTop: '10px' }}>
-                          <strong>Ressources:</strong>
+                          <strong>Resources:</strong>
                           <ul style={{ marginLeft: '20px', marginTop: '5px' }}>
                             {rec.resources.map((resource, rIdx) => (
                               <li key={rIdx}>{resource}</li>
@@ -119,7 +119,7 @@ function Results({ user }) {
 
               {recommendations.topics_to_study && recommendations.topics_to_study.length > 0 && (
                 <div style={{ marginBottom: '30px' }}>
-                  <h4 style={{ marginBottom: '15px' }}>Sujets à étudier:</h4>
+                  <h4 style={{ marginBottom: '15px' }}>Topics to study:</h4>
                   <ul style={{ marginLeft: '20px' }}>
                     {recommendations.topics_to_study.map((topic, index) => (
                       <li key={index} style={{ marginBottom: '5px' }}>{topic}</li>
@@ -130,7 +130,7 @@ function Results({ user }) {
 
               {recommendations.next_steps && recommendations.next_steps.length > 0 && (
                 <div>
-                  <h4 style={{ marginBottom: '15px' }}>Prochaines étapes:</h4>
+                  <h4 style={{ marginBottom: '15px' }}>Next steps:</h4>
                   <ul style={{ marginLeft: '20px' }}>
                     {recommendations.next_steps.map((step, index) => (
                       <li key={index} style={{ marginBottom: '5px' }}>{step}</li>
@@ -144,13 +144,13 @@ function Results({ user }) {
 
         <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', marginTop: '20px' }}>
           <Link to="/dashboard" className="btn btn-primary">
-            Voir le tableau de bord
+            View dashboard
           </Link>
           <Link to="/select-filiere" className="btn btn-primary">
-            Nouveau test
+            New assessment
           </Link>
           <Link to="/history" className="btn btn-secondary">
-            Voir l'historique
+            View history
           </Link>
         </div>
       </div>

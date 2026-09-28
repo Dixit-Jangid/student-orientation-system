@@ -7,6 +7,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 import random
+import os
 
 # Define specializations
 SPECIALIZATIONS = {
@@ -90,9 +91,10 @@ def generate_realistic_scores(specialization, question_num, num_samples):
     
     return scores
 
-def generate_dataset(n_samples=50000):
+def generate_dataset(n_samples=5000):
     """
-    Generate synthetic dataset with realistic patterns, missing values, outliers, and errors
+    Generate synthetic dataset with realistic patterns, missing values, outliers, and errors.
+    Kept at a moderate size so the project can train reliably on local machines.
     """
     print(f"Generating {n_samples} samples...")
     
@@ -229,9 +231,10 @@ def generate_dataset(n_samples=50000):
 
 if __name__ == "__main__":
     # Generate dataset
-    df = generate_dataset(n_samples=50000)
-    
+    df = generate_dataset(n_samples=5000)
+
     # Save to CSV
+    os.makedirs('dataset', exist_ok=True)
     df.to_csv('dataset/student_tests.csv', index=False)
     print("\nDataset saved to 'dataset/student_tests.csv'")
 

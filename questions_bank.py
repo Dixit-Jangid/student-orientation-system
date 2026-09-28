@@ -3,6 +3,8 @@ Question Bank for Specialization Assessment
 15-25 questions per specialization with skill mapping
 """
 
+import hashlib
+
 QUESTIONS_BANK = {
     "Machine Learning Engineer": [
         {
@@ -444,10 +446,27 @@ def get_questions_for_specialization(specialization, num_questions=15):
     """Get questions for a specific specialization"""
     if specialization in QUESTIONS_BANK:
         questions = QUESTIONS_BANK[specialization]
-        return questions[:num_questions] if len(questions) >= num_questions else questions
+        selected_questions = questions[:num_questions] if len(questions) >= num_questions else questions
     else:
         # Return generic questions if specialization not found
-        return QUESTIONS_BANK["Full-Stack Developer"][:num_questions]
+        selected_questions = QUESTIONS_BANK["Full-Stack Developer"][:num_questions]
+
+    # Keep the order stable across the questions request and prediction request,
+    # while preventing every correct answer from being option A.
+    shuffled_questions = []
+    for question in selected_questions:
+        option_order = sorted(
+            range(len(question['options'])),
+            key=lambda index: hashlib.sha256(
+                f"{question['id']}:{index}".encode('utf-8')
+            ).hexdigest()
+        )
+        shuffled_question = question.copy()
+        shuffled_question['options'] = [question['options'][index] for index in option_order]
+        shuffled_question['correct'] = option_order.index(question['correct'])
+        shuffled_questions.append(shuffled_question)
+
+    return shuffled_questions
 
 def get_all_specializations():
     """Get list of all specializations"""

@@ -14,6 +14,7 @@ import pandas as pd
 from datetime import datetime
 import os
 import sys
+import subprocess
 
 # Add parent directory to path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -55,6 +56,27 @@ MODEL_PATHS = [
 ]
 model_data = None
 
+FILIERE_ALIASES = {
+    "Artificial Intelligence & Data Science": "Intelligence Artificielle & Sciences des Données",
+    "Cybersecurity & Network Infrastructure": "Cybersécurité & Infrastructures Réseaux",
+    "Digital Development & Information Systems": "Développement Digital & Systèmes d'Information",
+}
+
+
+def canonicalize_filiere(filiere: str) -> str:
+    """Keep model-facing path names consistent across old and English UI labels."""
+    return FILIERE_ALIASES.get(filiere.strip(), filiere.strip())
+
+def train_model_if_missing():
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    training_script = os.path.join(project_root, 'excute', 'run_ml_pipeline.py')
+    if os.path.exists(training_script):
+        print("[MODEL] No trained model found. Starting training pipeline...")
+        subprocess.run([sys.executable, training_script], cwd=project_root, check=False)
+    else:
+        print(f"[MODEL] Training script not found at: {training_script}")
+
+
 def load_model():
     global model_data
     if model_data is None:
@@ -69,6 +91,16 @@ def load_model():
                     continue
     if model_data is None:
         print(f"[MODEL] Warning: No model found. Checked paths: {MODEL_PATHS}")
+        train_model_if_missing()
+        for model_path in MODEL_PATHS:
+            if os.path.exists(model_path):
+                try:
+                    model_data = joblib.load(model_path)
+                    print(f"[MODEL] Loaded after training from: {model_path}")
+                    break
+                except Exception as e:
+                    print(f"[MODEL] Error loading after training from {model_path}: {e}")
+                    continue
     return model_data
 
 # Initialize database
@@ -244,7 +276,7 @@ async def get_questions(filiere: str):
     try:
         # Decode filiere in case it's URL encoded
         from urllib.parse import unquote
-        filiere = unquote(filiere)
+        filiere = canonicalize_filiere(unquote(filiere))
         
         # Map filière to specializations and get questions
         specializations = {
@@ -256,20 +288,20 @@ async def get_questions(filiere: str):
         # Get questions from first specialization in filière
         spec_list = specializations.get(filiere, ["Full-Stack Developer"])
         if not spec_list:
-            raise HTTPException(status_code=404, detail=f"Filière '{filiere}' non trouvée")
+            raise HTTPException(status_code=404, detail=f"Path '{filiere}' was not found.")
         
         spec = spec_list[0]
         questions = get_questions_for_specialization(spec, num_questions=25)
         
         if not questions or len(questions) == 0:
-            raise HTTPException(status_code=404, detail=f"Aucune question disponible pour la spécialisation '{spec}'")
+            raise HTTPException(status_code=404, detail=f"No questions are available for specialization '{spec}'.")
         
         return [QuestionResponse(**q) for q in questions]
     except HTTPException:
         raise
     except Exception as e:
         print(f"Error in get_questions: {e}")
-        raise HTTPException(status_code=500, detail=f"Erreur lors de la récupération des questions: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error while loading questions: {str(e)}")
 
 @app.post("/api/predict", response_model=PredictionResponse)
 async def predict_specialization(
@@ -279,6 +311,7 @@ async def predict_specialization(
 ):
     """Predict specialization based on test results"""
     print(f"[PREDICT] Received test submission from user: {current_user.username}")
+    test_data.filiere = canonicalize_filiere(test_data.filiere)
     print(f"[PREDICT] Filiere: {test_data.filiere}")
     print(f"[PREDICT] Answers count: {len(test_data.answers)}")
     print(f"[PREDICT] Scores: practical={test_data.practical_test_score}, logical={test_data.logical_reasoning_score}, problem={test_data.problem_solving_score}")
@@ -290,7 +323,7 @@ async def predict_specialization(
             print(f"ERROR: Model not loaded. Checked paths: {MODEL_PATHS}")
             for path in MODEL_PATHS:
                 print(f"  - {path}: exists={os.path.exists(path)}")
-            raise HTTPException(status_code=500, detail="Modèle non chargé. Veuillez entraîner le modèle d'abord.")
+            raise HTTPException(status_code=500, detail="Model is not loaded. Please train the model first.")
         
         model = model_data['model']
         scaler = model_data['scaler']
@@ -299,7 +332,7 @@ async def predict_specialization(
         label_encoder = model_data.get('label_encoder')
         
         if label_encoder is None:
-            raise HTTPException(status_code=500, detail="Label encoder non trouvé dans le modèle")
+            raise HTTPException(status_code=500, detail="Label encoder was not found in the model.")
         
         # Prepare features from test submission
         features = {}
@@ -316,6 +349,17 @@ async def predict_specialization(
         # Map answers to question scores (q1_score to q25_score)
         # answers dict has question_id as key and answer index (0-3) as value
         question_id_to_index = {q['id']: idx for idx, q in enumerate(questions)}
+
+        # Calculate the practical score from correctness, not from the option index.
+        # Option index 0 is a valid answer and must not be treated as zero points.
+        answered_correctly = sum(
+            question['id'] in test_data.answers
+            and test_data.answers[question['id']] == question.get('correct')
+            for question in questions
+        )
+        practical_score = round(
+            (answered_correctly / len(questions)) * 100, 2
+        ) if questions else 0.0
         
         for i in range(1, 26):
             q_key = f'q{i}_score'
@@ -328,7 +372,7 @@ async def predict_specialization(
                 features[q_key] = 0
         
         # Other features
-        features['practical_test_score'] = test_data.practical_test_score
+        features['practical_test_score'] = practical_score
         features['logical_reasoning_score'] = test_data.logical_reasoning_score
         features['problem_solving_score'] = test_data.problem_solving_score
         features['time_spent_minutes'] = test_data.time_spent_minutes
@@ -337,10 +381,20 @@ async def predict_specialization(
         user_history = db.query(TestResult).filter(TestResult.user_id == current_user.id).order_by(TestResult.test_date.desc()).first()
         if user_history:
             features['previous_level'] = user_history.current_level
-            features['current_level'] = min(5, user_history.current_level + 1)  # Assume improvement
         else:
             features['previous_level'] = 1
+
+        # Map the assessment score to a transparent five-level scale.
+        if practical_score >= 80:
+            features['current_level'] = 5
+        elif practical_score >= 60:
+            features['current_level'] = 4
+        elif practical_score >= 40:
+            features['current_level'] = 3
+        elif practical_score >= 20:
             features['current_level'] = 2
+        else:
+            features['current_level'] = 1
         
         features['improvement_rate'] = (features['current_level'] - features['previous_level']) / 5.0
         
@@ -357,7 +411,7 @@ async def predict_specialization(
                 features['filiere_encoded'] = filiere_encoded
                 print(f"Using fallback filiere: {available_filieres[0]}")
             else:
-                raise HTTPException(status_code=500, detail=f"Erreur lors de l'encodage de la filière: {str(e)}")
+                raise HTTPException(status_code=500, detail=f"Error while encoding the path: {str(e)}")
         
         # Create feature vector in correct order
         try:
@@ -383,9 +437,23 @@ async def predict_specialization(
             print(f"Feature vector shape: {feature_vector.shape if 'feature_vector' in locals() else 'N/A'}")
             print(f"Feature names count: {len(feature_names)}")
             print(f"Features dict keys count: {len(features)}")
-            raise HTTPException(status_code=500, detail=f"Erreur lors de la prédiction: {str(e)}")
+            raise HTTPException(status_code=500, detail=f"Prediction error: {str(e)}")
         
         predicted_specialization = class_names[prediction]
+        if pd.isna(predicted_specialization) or not isinstance(predicted_specialization, str):
+            fallback_specializations = {
+                "Intelligence Artificielle & Sciences des Données": "Machine Learning Engineer",
+                "Cybersécurité & Infrastructures Réseaux": "Cybersecurity Analyst",
+                "Développement Digital & Systèmes d'Information": "Full-Stack Developer",
+            }
+            predicted_specialization = fallback_specializations.get(
+                test_data.filiere,
+                "Full-Stack Developer"
+            )
+            print(
+                f"[PREDICT] Invalid model class {class_names[prediction]!r}; "
+                f"using fallback: {predicted_specialization}"
+            )
         confidence = float(probabilities[prediction])
         
         # Get Top 3 specializations
@@ -396,6 +464,7 @@ async def predict_specialization(
                 "confidence": float(probabilities[idx])
             }
             for idx in top_3_indices
+            if isinstance(class_names[idx], str) and not pd.isna(class_names[idx])
         ]
         
         # Generate recommendations
@@ -411,10 +480,10 @@ async def predict_specialization(
             print(f"WARNING: Error generating recommendations: {e}")
             # Provide default recommendations
             recommendations = {
-                "skills_to_improve": ["Compétences techniques générales"],
-                "topics_to_study": ["Fondamentaux de la spécialisation"],
-                "learning_recommendations": ["Continuez à vous former"],
-                "suggested_tests": ["Test avancé"]
+                "skills_to_improve": ["General technical skills"],
+                "topics_to_study": ["Specialization fundamentals"],
+                "learning_recommendations": ["Keep learning and practicing"],
+                "suggested_tests": ["Advanced assessment"]
             }
         
         # Save test result
@@ -424,7 +493,7 @@ async def predict_specialization(
                 filiere=test_data.filiere,
                 predicted_specialization=predicted_specialization,
                 confidence=confidence,
-                practical_test_score=test_data.practical_test_score,
+                practical_test_score=practical_score,
                 logical_reasoning_score=test_data.logical_reasoning_score,
                 problem_solving_score=test_data.problem_solving_score,
                 time_spent_minutes=test_data.time_spent_minutes,
@@ -439,7 +508,7 @@ async def predict_specialization(
         except Exception as e:
             print(f"ERROR saving test result: {e}")
             db.rollback()
-            raise HTTPException(status_code=500, detail=f"Erreur lors de la sauvegarde du résultat: {str(e)}")
+            raise HTTPException(status_code=500, detail=f"Error while saving the result: {str(e)}")
         
         # Save prediction history
         try:
@@ -480,7 +549,7 @@ async def predict_specialization(
         import traceback
         print(f"UNEXPECTED ERROR in predict_specialization: {e}")
         print(traceback.format_exc())
-        raise HTTPException(status_code=500, detail=f"Erreur inattendue lors de la prédiction: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Unexpected prediction error: {str(e)}")
 
 @app.get("/api/history")
 async def get_user_history(
@@ -531,9 +600,20 @@ async def get_user_progress(
             model_data['class_names']
         )
         progress_analysis = rec_system.get_progress_analysis(history_data)
+        progress_analysis['history'] = history_data
         return progress_analysis
     
-    return {"history": history_data}
+    levels = [item['current_level'] for item in history_data]
+    scores = [item['practical_test_score'] for item in history_data]
+    return {
+        "history": history_data,
+        "total_tests": len(history_data),
+        "current_level": levels[-1] if levels else 0,
+        "average_score": float(np.mean(scores)) if scores else 0,
+        "level_trend": "stable",
+        "score_trend": "stable",
+        "improvement_rate": 0
+    }
 
 if __name__ == "__main__":
     import uvicorn
