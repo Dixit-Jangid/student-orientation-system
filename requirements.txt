@@ -1,0 +1,31 @@
+# Machine Learning
+scikit-learn>=1.3.0
+pandas>=2.0.0
+numpy>=1.24.0
+xgboost>=2.0.0
+imbalanced-learn>=0.11.0
+
+# Web Framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+pydantic==2.5.0
+pydantic-settings==2.1.0
+
+# Database
+sqlalchemy==2.0.23
+psycopg2-binary==2.9.9
+alembic==1.12.1
+
+# Utilities
+python-dotenv==1.0.0
+joblib==1.3.2
+matplotlib==3.8.2
+seaborn==0.13.0
+plotly==5.18.0
+
+# Frontend dependencies (for React)
+# Will be in package.json
+

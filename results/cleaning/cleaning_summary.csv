@@ -1,0 +1,5 @@
+Metric,Before,After,Difference
+Rows,50000,50000,0
+Columns,36,36,0
+Missing Values,96424,3954,-92470
+Duplicates,0,0,0

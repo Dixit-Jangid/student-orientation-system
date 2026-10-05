@@ -1,0 +1,17 @@
+1. Démarrer le Backend
+cd backend
+uvicorn main:app --reload
+
+ 2. Tester l'API
+- Ouvrir http://localhost:8000/docs
+- Créer un utilisateur: POST /api/register
+- Se connecter: POST /api/login
+- Faire une prédiction: POST /api/predict
+
+3. Démarrer le Frontend (Optionnel)
+cd frontend
+npm install //if npm not instaled
+npm start
+
+User admin
+admin/admin
